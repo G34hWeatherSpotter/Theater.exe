@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Theater.exe – Now Playing</title>
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      color: lime;
+      font-family: monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .title {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    .timer {
+      font-size: 4rem;
+      margin-bottom: 2rem;
+    }
+    .idle {
+      color: gray;
+      font-size: 1.2rem;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="title" id="title">🎥 Now Playing: *Nothing yet...*</div>
+  <div class="timer" id="timer">00:00:00</div>
+  <div class="idle" id="idle">(The canning room play time 😐)</div>
+
+  <script>
+    const title = document.getElementById("title");
+    const timer = document.getElementById("timer");
+    const idleMsg = document.getElementById("idle");
+
+    // Simulate media info – replace with actual fetch from Plex if needed
+    let nowPlaying = {
+      title: "Shrek 2",
+      totalTime: 7320, // in seconds (2h 2m)
+      startTime: Date.now() / 1000 // current time in seconds
+    };
+
+    const updateTimer = () => {
+      const currentTime = Date.now() / 1000;
+      let elapsed = Math.floor(currentTime - nowPlaying.startTime);
+      let timeLeft = Math.max(0, nowPlaying.totalTime - elapsed);
+
+      if (timeLeft <= 0) {
+        title.textContent = "🎥 Now Playing: *Nothing yet...*";
+        timer.textContent = "00:00:00";
+        idleMsg.style.display = "block";
+        return;
+      }
+
+      idleMsg.style.display = "none";
+      title.textContent = `🎥 Now Playing: ${nowPlaying.title}`;
+
+      const hrs = String(Math.floor(timeLeft / 3600)).padStart(2, '0');
+      const mins = String(Math.floor((timeLeft % 3600) / 60)).padStart(2, '0');
+      const secs = String(timeLeft % 60).padStart(2, '0');
+
+      timer.textContent = `${hrs}:${mins}:${secs}`;
+    };
+
+    setInterval(updateTimer, 1000);
+  </script>
+</body>
+</html>
